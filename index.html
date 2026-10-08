@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Dev Sandbox Console</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --panel-bg: #161b22;
+            --border-color: #30363d;
+            --text-color: #c9d1d9;
+            --accent-color: #58a6ff;
+            --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-mono);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 1.25rem;
+            color: var(--accent-color);
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .pane {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .pane h2 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: #8b949e;
+        }
+
+        textarea, pre {
+            flex: 1;
+            background-color: #0d1117;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            font-family: var(--font-mono);
+            padding: 10px;
+            border-radius: 4px;
+            resize: none;
+            overflow-y: auto;
+        }
+
+        textarea:focus, button:focus {
+            outline: 1px solid var(--accent-color);
+        }
+
+        .controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            background-color: #238636;
+            color: #ffffff;
+            border: 1px solid rgba(27, 31, 35, 0.15);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #2ea043;
+        }
+
+        .status-bar {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #8b949e;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>// NYNOX_DEV_SANDBOX</h1>
+        <div class="status-bar" id="statusBar">Status: Idle</div>
+    </div>
+
+    <div class="workspace">
+        <div class="pane">
+            <h2>Input Parameters / Prompt Stream</h2>
+            <textarea id="inputStream" placeholder="// Type parameters or code structure here..."></textarea>
+            <div class="controls">
+                <button onclick="compileData()">Execute Stream</button>
+                <button onclick="clearStream()" style="background-color: #da3633;">Clear</button>
+            </div>
+        </div>
+
+        <div class="pane">
+            <h2>Output Payload Console</h2>
+            <pre id="outputStream">// Execution output will render here...</pre>
+        </div>
+    </div>
+
+    <script>
+        function compileData() {
+            const input = document.getElementById('inputStream').value;
+            const output = document.getElementById('outputStream');
+            const status = document.getElementById('statusBar');
+
+            if (!input.trim()) {
+                status.innerText = "Status: Error - Empty Input Stream";
+                return;
+            }
+
+            status.innerText = "Status: Processing Payload...";
+            
+            setTimeout(() => {
+                const timestamp = new Date().toISOString();
+                output.innerText = `[SYS_LOG @ ${timestamp}]\n` +
+                                   `> Target Payload Processed Successfully.\n` +
+                                   `> Sandbox Isolation: ACTIVE\n` +
+                                   `> Result Data:\n\n` +
+                                   btoa(input).match(/.{1,64}/g).join('\n');
+                status.innerText = "Status: Complete";
+            }, 400);
+        }
+
+        function clearStream() {
+            document.getElementById('inputStream').value = '';
+            document.getElementById('outputStream').innerText = '// Execution output will render here...';
+            document.getElementById('statusBar').innerText = 'Status: Cleared';
+        }
+    </script>
+</body>
+</html>
